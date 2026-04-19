@@ -2,6 +2,62 @@
 
 {% block title %}Spendly — Track Every Rupee{% endblock %}
 
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const modal = document.getElementById('videoModal');
+        const videoFrame = document.getElementById('videoFrame');
+        const modalClose = document.querySelector('.modal-close');
+        const seeHowButton = document.querySelector('a[href="#"]');
+
+        // Find the "See how it works" button specifically
+        const buttons = document.querySelectorAll('.btn-ghost');
+        let seeHowWorks = null;
+        buttons.forEach(button => {
+            if (button.textContent.includes('See how it works')) {
+                seeHowWorks = button;
+            }
+        });
+
+        function openModal() {
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal() {
+            modal.classList.remove('active');
+            document.body.style.overflow = 'auto';
+            // Stop video by replacing src with empty and then restoring it
+            const src = videoFrame.src;
+            videoFrame.src = '';
+            videoFrame.src = src;
+        }
+
+        // Open modal on button click
+        if (seeHowWorks) {
+            seeHowWorks.addEventListener('click', function(e) {
+                e.preventDefault();
+                openModal();
+            });
+        }
+
+        // Close modal on close button click
+        if (modalClose) {
+            modalClose.addEventListener('click', closeModal);
+        }
+
+        // Close modal on overlay click
+        if (modal) {
+            modal.addEventListener('click', function(e) {
+                if (e.target === modal) {
+                    closeModal();
+                }
+            });
+        }
+    });
+</script>
+{% endblock %}
+
 {% block content %}
 
 <section class="hero">
@@ -95,5 +151,24 @@
         <a href="{{ url_for('register') }}" class="btn-primary">Create free account</a>
     </div>
 </section>
+
+<!-- Modal -->
+<div class="modal-overlay" id="videoModal">
+    <div class="modal-container">
+        <button class="modal-close" aria-label="Close modal">&times;</button>
+        <div class="modal-content">
+            <iframe
+                id="videoFrame"
+                width="100%"
+                height="100%"
+                src="https://www.youtube.com/embed/dQw4w9WgXcQ"
+                title="Spendly Demo"
+                frameborder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowfullscreen>
+            </iframe>
+        </div>
+    </div>
+</div>
 
 {% endblock %}
