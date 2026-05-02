@@ -41,9 +41,9 @@ def profile():
     return "Profile page — coming in Step 4"
 
 
-@app.route("/expenses/add")
+@app.route("/expenses/add", methods=["GET", "POST"])
 def add_expense():
-    return "Add expense — coming in Step 7"
+    return render_template("add_expense.html")
 
 
 @app.route("/expenses/<int:id>/edit")
