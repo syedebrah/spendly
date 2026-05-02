@@ -4,12 +4,17 @@
       "Bash(git *)",
       "Bash(python *)",
       "Bash(pytest *)",
+      "Bash(pip *)",
       "Read",
       "Edit",
       "Write",
       "Glob",
       "Grep"
     ]
+  },
+  "env": {
+    "FLASK_ENV": "development",
+    "FLASK_DEBUG": "1"
   },
   "hooks": {
     "PostToolUse": [
@@ -27,6 +32,19 @@
             "command": "jq -r '.tool_input.file_path // .tool_response.filePath' | { read -r f; if [[ \"$f\" == *.css || \"$f\" == *.js ]]; then npx prettier --write \"$f\" 2>/dev/null || true; fi; }",
             "statusMessage": "Formatting with Prettier...",
             "if": "Write|Edit(.+\\.(css|js)$)"
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "matcher": "deploy|push to|commit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "cd F:\\expense-tracker && pytest -v 2>&1 | head -50",
+            "statusMessage": "Running pre-deployment tests...",
+            "timeout": 60
           }
         ]
       }
