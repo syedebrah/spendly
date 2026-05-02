@@ -1,0 +1,35 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git *)",
+      "Bash(python *)",
+      "Bash(pytest *)",
+      "Read",
+      "Edit",
+      "Write",
+      "Glob",
+      "Grep"
+    ]
+  },
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "jq -r '.tool_input.file_path // .tool_response.filePath' | { read -r f; if [[ \"$f\" == *.py ]]; then black \"$f\" 2>/dev/null || true; fi; }",
+            "statusMessage": "Formatting Python with Black...",
+            "if": "Write|Edit(.+\\.py$)"
+          },
+          {
+            "type": "command",
+            "command": "jq -r '.tool_input.file_path // .tool_response.filePath' | { read -r f; if [[ \"$f\" == *.css || \"$f\" == *.js ]]; then npx prettier --write \"$f\" 2>/dev/null || true; fi; }",
+            "statusMessage": "Formatting with Prettier...",
+            "if": "Write|Edit(.+\\.(css|js)$)"
+          }
+        ]
+      }
+    ]
+  }
+}
